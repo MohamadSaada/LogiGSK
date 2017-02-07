@@ -9,6 +9,8 @@ G410 Atlas Spectrum </br>
 
 The code to control the keyboard leds is based on code from <a href="https://github.com/MatMoul">MatMoul</a> <a href="https://github.com/MatMoul/g810-led">g810-led</a> project.
 
+Ready to deploy jars can be found at <a href="https://sites.google.com/mohamadsaada.com/logigsk/home">LogiGSK</a>
+
 <b>Features:</b> </br>
 The software contains the following features:
 <ul>
