@@ -1,0 +1,80 @@
+#!/bin/sh
+
+NAME="LogiGSK"
+DESC="LogiGSK service"
+
+# Setup variables
+
+# The path to Jsvc
+EXEC=/usr/bin/jsvc
+
+# The path to the folder containing the java runtime
+JAVA_HOME=/usr/lib/jvm/jdk1.8.0_25
+
+# The path to the folder containing the dameon and other needed libraries
+CLASS_PATH_L="/opt/LogiGSK/lib/*.jar"
+
+# The path to the folder containing the executable jar
+CLASS_PATH_R="/opt/LogiGSK/LogiGSK.jar"
+
+# The fully qualified name of the class to execute
+CLASS=Logi.GSeries.Service.LogiGSKService
+
+#The user to run the daemon as
+#USER=hammi
+
+# The file that will contain our process identification number (pid) for other scripts/programs that need to access it.
+PID=$HOME/.local/share/LogiGSK/LogiGSKService.pid
+
+# System.out writes to this file
+LOG_OUT=$HOME/.local/share/LogiGSK/LogiGSKService.out
+
+# System.err writes to this file...
+LOG_ERR=$HOME/.local/share/LogiGSK/LogiGSKService.err
+
+jsvc_exec()
+{
+    export DISPLAY=:0
+    export XDG_CURRENT_DESKTOP=KDE
+    $EXEC -home "$JAVA_HOME" -cp "$CLASS_PATH_L":"$CLASS_PATH_R" -procname $NAME -outfile $LOG_OUT -errfile $LOG_ERR -pidfile $PID $1 $CLASS
+}
+
+case "$1" in
+    start)
+        echo "Starting the $DESC..."        
+        
+        # Start the service
+        jsvc_exec
+        
+        echo "The $DESC has started."
+            ;;
+    stop)
+        echo "Stopping the $DESC..."
+        
+        # Stop the service
+        jsvc_exec "-stop"       
+        
+        echo "The $DESC has stopped."
+            ;;
+    restart)
+        if [ -f "$PID" ]; then
+            
+            echo "Restarting the $DESC..."
+            
+            # Stop the service
+            jsvc_exec "-stop"
+            
+            # Start the service
+            jsvc_exec
+            
+            echo "The $DESC has restarted."
+        else
+            echo "Daemon not running, no action taken"
+            exit 1
+        fi
+            ;;
+    *)
+            echo "Usage: /opt/LogiGSK/$NAME {start|stop|restart}" >&2
+	    exit 3
+            ;;
+esac 
