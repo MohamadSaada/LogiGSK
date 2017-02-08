@@ -48,16 +48,35 @@ The daemon part will be responsible in connecting to a future android app that w
 <a href="https://github.com/MohamadSaada/LogiGSK/wiki/Installation"><h2><b>Installation</b></h2></a>
 
 <b>Free Style</b> </br></br>
-<img src="https://raw.githubusercontent.com/MohamadSaada/LogiGSK/master/SampleImages/LogitechGSeriesKeyboardSoftware.png"> </br>
+<img src="https://raw.githubusercontent.com/MohamadSaada/LogiGSK/master/SampleImages/LogitechGSeriesKeyboardSoftware_1.png"> </br>
+
+<b>Effects</b> </br></br>
+<img src="https://raw.githubusercontent.com/MohamadSaada/LogiGSK/master/SampleImages/LogitechGSeriesKeyboardSoftware_2.png"> </br>
+
+<b>Zones</b> </br></br>
+<img src="https://raw.githubusercontent.com/MohamadSaada/LogiGSK/master/SampleImages/LogitechGSeriesKeyboardSoftware_3.png"> </br>
+
+<b>Startup Effect</b> </br></br>
+<img src="https://raw.githubusercontent.com/MohamadSaada/LogiGSK/master/SampleImages/LogitechGSeriesKeyboardSoftware_4.png"> </br>
 
 <b>Fixed Colour Effect</b> </br></br>
 <img src="https://raw.githubusercontent.com/MohamadSaada/LogiGSK/master/SampleImages/LogitechGSeriesKeyboardSoftware_FixedColour.png"> </br>
 
 <b>Breathing Effect</b> </br></br>
-<img src="https://raw.githubusercontent.com/MohamadSaada/LogiGSK/master/SampleImages/LogitechGSeriesKeyboardSoftware_BreathingEffect.png"> </br>
+<img src="https://raw.githubusercontent.com/MohamadSaada/LogiGSK/master/SampleImages/LogitechGSeriesKeyboardSoftware_Breathing.png"> </br>
+
+<b>Colour Wave</b> </br></br>
+<img src="https://raw.githubusercontent.com/MohamadSaada/LogiGSK/master/SampleImages/LogitechGSeriesKeyboardSoftware_ColourWave.png"> </br>
+
+<b>Colour Cycle</b> </br></br>
+<img src="https://raw.githubusercontent.com/MohamadSaada/LogiGSK/master/SampleImages/LogitechGSeriesKeyboardSoftware_ColourCycle.png"> </br>
 
 <b>Star Effect</b> </br></br>
-<img src="https://raw.githubusercontent.com/MohamadSaada/LogiGSK/master/SampleImages/LogitechGSeriesKeyboardSoftware_StarEffect.png"> </br>
+<img src="https://raw.githubusercontent.com/MohamadSaada/LogiGSK/master/SampleImages/LogitechGSeriesKeyboardSoftware_Star.png"> </br>
 
-<b>Zones</b> </br></br>
-<img src="https://raw.githubusercontent.com/MohamadSaada/LogiGSK/master/SampleImages/LogitechGSeriesKeyboardSoftware_Zones.png"> </br>
+<b>Settings</b> </br></br>
+<img src="https://raw.githubusercontent.com/MohamadSaada/LogiGSK/master/SampleImages/LogitechGSeriesKeyboardSoftware_Settings_1.png"> </br>
+
+<img src="https://raw.githubusercontent.com/MohamadSaada/LogiGSK/master/SampleImages/LogitechGSeriesKeyboardSoftware_Settings_2.png"> </br>
+
+<img src="https://raw.githubusercontent.com/MohamadSaada/LogiGSK/master/SampleImages/LogitechGSeriesKeyboardSoftware_Settings_3.png"> </br>
