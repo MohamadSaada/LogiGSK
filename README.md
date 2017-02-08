@@ -43,6 +43,10 @@ Both main program and daemon feature a hotplug feature where it detects if a sup
 
 The daemon part will be responsible in connecting to a future android app that will also control keyboard colours and effects. It will also retrieve useful information from the computer (CPU, memory, etc...).
 
+
+
+<a href="https://github.com/MohamadSaada/LogiGSK/wiki/Installation"><h2><b>Installation</b></h2></a>
+
 <b>Free Style</b> </br></br>
 <img src="https://raw.githubusercontent.com/MohamadSaada/LogiGSK/master/SampleImages/LogitechGSeriesKeyboardSoftware.png"> </br>
 
