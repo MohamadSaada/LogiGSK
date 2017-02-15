@@ -123,18 +123,6 @@ cat > $TEMP_DIR/tmpscripts/logigsk-service <<'endmsg'
 
 case $1 in
     start)
-	if [ "$(id -u)" != "0" ]; then
-	  if [ ! -f $HOME/.config/autostart/LogiGSK.sh ]; then
-	    while true; do
-	      read -p "Would you like to add automatic startup of this service? " yn
-	      case $yn in
-		  [Yy]* ) ln -sf /usr/share/logigsk/LogiGSK.sh ~/.config/autostart/LogiGSK.sh; break;;
-		  [Nn]* ) break;;
-		  * ) echo "Please answer yes or no.";;
-	      esac
-	  done
-	  fi  
-	fi
         "/usr/share/logigsk/LogiGSK" start
     ;;
     stop)
@@ -143,8 +131,40 @@ case $1 in
     restart)	
         "/usr/share/logigsk/LogiGSK" restart
     ;;
+    install)	
+        if [ "$(id -u)" != "0" ]; then
+	  if [ ! -f "$HOME/.config/autostart/LogiGSK.sh" ]; then
+	    while true; do
+	      read -p "Would you like to add automatic startup of this service? " yn
+	      case $yn in
+		  [Yy]* ) ln -sf /usr/share/logigsk/LogiGSK.sh "$HOME/.config/autostart/LogiGSK.sh"; "Successfully added LogiGSK service to automatically startup"; break;;
+		  [Nn]* ) break;;
+		  * ) echo "Please answer yes or no.";;
+	      esac
+	    done
+	  else
+	    echo "LogiGSK service is already set to startup automatically"
+	  fi  
+	fi
+    ;;
+    uninstall)	
+        if [ "$(id -u)" != "0" ]; then
+	  if [ -L "$HOME/.config/autostart/LogiGSK.sh" ]; then
+	    while true; do
+	      read -p "Would you like to remove automatic startup of this service? " yn
+	      case $yn in
+		  [Yy]* ) rm "$HOME/.config/autostart/LogiGSK.sh"; echo "Successfully removed LogiGSK service from automatic startup"; break;;
+		  [Nn]* ) break;;
+		  * ) echo "Please answer yes or no.";;
+	      esac
+	    done
+	  else
+	    echo "LogiGSK service is not set to startup automatically"
+	  fi  
+	fi
+    ;;
     *)  
-	echo "Usage: logigsk-service {start|stop|restart}" >&2
+	echo "Usage: logigsk-service {start|stop|restart|install|uninstall}" >&2
 	exit 3
     ;;
 esac
