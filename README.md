@@ -58,8 +58,8 @@ The daemon part will be responsible in connecting to a future android app that w
 Please note that the package creator script `logigsk-buildpackage` uses Apache Ant, java, alien and dpkg tools to compile the source code to create executable jars which in turn are used along with other scripts to create the final package, you can trace every step in `logigsk-buildpackage` for a better understanding
 
 ### Using provided package files (second best way)
-* [.deb package](https://drive.google.com/open?id=0B9Jw3nU_1quKMzMyX2g3UGM3ZUk)
-* [.rpm package](https://drive.google.com/open?id=0B9Jw3nU_1quKcDFjRTZncEtjZm8)
+* [.deb package](https://drive.google.com/open?id=0B9Jw3nU_1quKcnlMTEZsbFl3Q0E)
+* [.rpm package](https://drive.google.com/open?id=0B9Jw3nU_1quKMWNzRm5LOXAwVzQ)
 
 ### Using provided INSTALL script (third best way)
 * Clone and extract repository
