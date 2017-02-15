@@ -22,7 +22,7 @@ import java.io.Serializable;
  * Note: This work has been converted to Java from C++, some modifications and 
  * additions have been done to the code
  * Original work can be found at https://github.com/MatMoul/g810-led
- * @author MatMoul, Mohamad Saada
+ * @author Mathieu Moulin(MatMoul), Mohamad Saada
  */
 public class GKeyboard implements Serializable {
 

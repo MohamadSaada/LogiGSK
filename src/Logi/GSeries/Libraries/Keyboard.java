@@ -31,7 +31,7 @@ import org.usb4java.LibUsbException;
  * Note: This work has been converted to Java from C++, some modifications and 
  * additions have been done to the code
  * Original work can be found at https://github.com/MatMoul/g810-led
- * @author MatMoul, Mohamad Saada
+ * @author Mathieu Moulin(MatMoul), Mohamad Saada
  */
 public class Keyboard {
 
@@ -111,7 +111,7 @@ public class Keyboard {
         tilde, minus, equal,
         open_bracket, close_bracket,
         semicolon, quote, dollar,
-        intl_backslash, comma, period, slash
+        intl_backslash, comma, period
     };
     
     public enum KeyG910USQWERTY { // 115 keys
