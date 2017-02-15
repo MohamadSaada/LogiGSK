@@ -47,6 +47,27 @@ The daemon part will be responsible in connecting to a future android app that w
 
 <a href="https://github.com/MohamadSaada/LogiGSK/wiki/Installation"><h2><b>Installation</b></h2></a>
 
+### Using provided package creator script file (best way)
+* Clone and extract repository 
+* To get a .deb package run `sudo ./logigsk-buildpackage deb`
+* To get a .rpm package run `sudo ./logigsk-buildpackage rpm` (Please note that rpm are created using alien tool through converting .deb package to .rpm)
+* To get both packages run `sudo ./logigsk-buildpackage`
+* Install the resulting package
+* To uninstall do so through your package manager, example in Ubuntu `sudo apt-get remove logigsk`.
+
+Please note that the package creator script `logigsk-buildpackage` uses Apache Ant, java, alien and dpkg tools to compile the source code to create executable jars which in turn are used along with other scripts to create the final package, you can trace every step in `logigsk-buildpackage` for a better understanding
+
+### Using provided package files (second best way)
+* [.deb package](https://drive.google.com/open?id=0B9Jw3nU_1quKMzMyX2g3UGM3ZUk)
+* [.rpm package](https://drive.google.com/open?id=0B9Jw3nU_1quKcDFjRTZncEtjZm8)
+
+### Using provided INSTALL script (third best way)
+* Clone and extract repository
+* Run the script by typing `sudo ./INSTALL`
+* To uninstall run `sudo logigsk UNINSATLL`
+
+Please note that this script is very similar to the package creating script but it doesn't create a package, but rather installs the files directly to the directories bypassing the package installation through package manager step. it also differs from the package installation step in that it has an UNINSTALL script which can be executed by running `sudo logigsk UNINSATLL`.
+
 <b>Free Style</b> </br></br>
 <img src="https://raw.githubusercontent.com/MohamadSaada/LogiGSK/master/SampleImages/LogitechGSeriesKeyboardSoftware_1.png"> </br>
 
