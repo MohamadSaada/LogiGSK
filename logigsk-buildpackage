@@ -1,0 +1,580 @@
+#!/bin/bash
+
+#check if script is run as root
+if [ "$(id -u $USER)" != "0" ]; then
+  echo "Please run as root"
+  exit 1
+fi
+
+#check if needed tools are installed(not perfect)
+command -v java >/dev/null 2>&1 || { echo >&2 "This program requires java but it's not installed. Aborting.";}
+command -v javac >/dev/null 2>&1 || { echo >&2 "This program requires javac but it's not installed. Aborting.";}
+command -v jsvc >/dev/null 2>&1 || { echo >&2 "This program requires jsvc but it's not installed. Aborting.";}
+command -v ant >/dev/null 2>&1 || { echo >&2 "This program requires ant but it's not installed. Aborting.";}
+command -v dpkg >/dev/null 2>&1 || { echo >&2 "This program requires dpkg but it's not installed. Aborting.";}
+
+case "$1" in
+
+  deb)
+  ;;
+  
+  rpm|*)
+    alien -r -c -v debian.deb
+    command -v alien >/dev/null 2>&1 || { echo >&2 "This program requires alien to produce rpm package files, but it's not installed. Aborting.";}
+  ;;
+esac
+
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+#compile the project using apache ant
+echo "compiling the project using Apache Ant"
+ant -f $DIR -Dnb.internal.action.name=rebuild clean jar
+
+
+PACKAGE_NAME="logigsk"
+PACKAGE_VERSION="1.0.0"
+SOURCE_DIR=$PWD
+TEMP_DIR="/tmp"
+PACKAGE_SERVICE_NAME="logigsk-service"
+
+mkdir -p $TEMP_DIR/tmpscripts/daemon
+mkdir -p $TEMP_DIR/debian/DEBIAN
+mkdir -p $TEMP_DIR/debian/usr/bin
+mkdir -p $TEMP_DIR/debian/usr/share/applications
+mkdir -p $TEMP_DIR/debian/usr/share/$PACKAGE_NAME
+mkdir -p $TEMP_DIR/debian/usr/share/$PACKAGE_NAME/lib
+mkdir -p $TEMP_DIR/debian/usr/share/doc/$PACKAGE_NAME
+ 
+cat > $TEMP_DIR/tmpscripts/control <<'endmsg'
+Package: logigsk
+Section: utils
+Priority: optional
+Maintainer: Mohamad Saada <Mohamad@MohamadSaada.com>
+Version: 1.0.0
+Architecture: all
+Depends: default-jre | default-jre | java6-runtime, jarwrapper, jsvc
+Description: Logitech G series keyboard configuration utility
+ LogiGSK is free and open source software for configuring Logitech
+ G series keyboard leds under Linux operating system.
+Homepage: https://github.com/MohamadSaada/LogiGSK
+endmsg
+cat > $TEMP_DIR/tmpscripts/copyright <<'endmsg'
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: LogiGSK
+Source: https://github.com/MohamadSaada/LogiGSK
+
+Files: *
+Copyright (C) 2017 Mohamad Saada
+Licence: GPL 3+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ .
+ On Debian systems, the full text of the GNU General Public
+ License version 3 can be found in the file
+ `/usr/share/common-licenses/GPL-3'.
+endmsg
+cat > $TEMP_DIR/tmpscripts/99_LogiGSK <<'endmsg'
+#!/bin/bash
+#This file should be place in /etc/pm/sleep.d/
+USER=`who | grep ':0' | grep -o '^\w*' | head -n1`
+case $1 in
+    hibernate)
+        #echo "Nothing to do"
+    ;;
+    suspend)
+        #echo "Nothing to do"
+    ;;
+    thaw)	
+        if [ "$(id -u $USER)" != "0" ]; then
+	  sudo -u $USER "/usr/share/logigsk/LogiGSK" restart
+	fi
+    ;;
+    resume)
+	if [ "$(id -u $USER)" != "0" ]; then
+	  sudo -u $USER "/usr/share/logigsk/LogiGSK" restart
+	fi
+    ;;
+    *)  #echo "Somebody is calling me totally wrong."
+    ;;
+esac
+
+endmsg
+cat > $TEMP_DIR/tmpscripts/logigsk <<'endmsg'
+#!/bin/sh
+java -jar /usr/share/logigsk/LogiGSK.jar
+endmsg
+cat > $TEMP_DIR/tmpscripts/logigsk-service <<'endmsg'
+#!/bin/bash
+
+case $1 in
+    start)
+	if [ "$(id -u)" != "0" ]; then
+	  if [ ! -f $HOME/.config/autostart/LogiGSK.sh ]; then
+	    while true; do
+	      read -p "Would you like to add automatic startup of this service? " yn
+	      case $yn in
+		  [Yy]* ) ln -sf /usr/share/logigsk/LogiGSK.sh ~/.config/autostart/LogiGSK.sh; break;;
+		  [Nn]* ) break;;
+		  * ) echo "Please answer yes or no.";;
+	      esac
+	  done
+	  fi  
+	fi
+        "/usr/share/logigsk/LogiGSK" start
+    ;;
+    stop)
+        "/usr/share/logigsk/LogiGSK" stop
+    ;;
+    restart)	
+        "/usr/share/logigsk/LogiGSK" restart
+    ;;
+    *)  
+	echo "Usage: logigsk-service {start|stop|restart}" >&2
+	exit 3
+    ;;
+esac
+endmsg
+cat > $TEMP_DIR/tmpscripts/logigsk.desktop <<'endmsg'
+[Desktop Entry]
+Encoding=UTF-8
+Name=LogiGSK
+Categories=Settings;Utility;
+Comment=Logitech Keyboard Configuration Tool
+Exec=/usr/bin/logigsk
+Icon=/usr/share/logigsk/LogiGSK.png
+Terminal=false
+Type=Application
+StartupNotify=true
+endmsg
+cat > $TEMP_DIR/tmpscripts/LogiGSK.rules <<'endmsg'
+#G410 Atlas Spectrum
+ACTION=="add", SUBSYSTEMS=="usb", ATTRS{idVendor}=="046d", ATTRS{idProduct}=="c330", MODE="666"
+#G610 Orion
+ACTION=="add", SUBSYSTEMS=="usb", ATTRS{idVendor}=="046d", ATTRS{idProduct}=="c333", MODE="666"
+#G610 Orion
+ACTION=="add", SUBSYSTEMS=="usb", ATTRS{idVendor}=="046d", ATTRS{idProduct}=="c338", MODE="666"
+#G810 Spectrum
+ACTION=="add", SUBSYSTEMS=="usb", ATTRS{idVendor}=="046d", ATTRS{idProduct}=="c331", MODE="666"
+#G810 Spectrum
+ACTION=="add", SUBSYSTEMS=="usb", ATTRS{idVendor}=="046d", ATTRS{idProduct}=="c337", MODE="666"
+#G910 Orion Spark
+ACTION=="add", SUBSYSTEMS=="usb", ATTRS{idVendor}=="046d", ATTRS{idProduct}=="c32b", MODE="666"
+#G910 Orion Spectrum
+ACTION=="add", SUBSYSTEMS=="usb", ATTRS{idVendor}=="046d", ATTRS{idProduct}=="c335", MODE="666"
+endmsg
+cat > $TEMP_DIR/tmpscripts/LogiGSK.sh <<'endmsg'
+#!/bin/bash
+"/usr/share/logigsk/LogiGSK" start
+endmsg
+cat > $TEMP_DIR/tmpscripts/preinst <<'endmsg'
+#!/bin/sh
+#
+# preinst script for LogiGSK
+#
+
+set -e
+
+# source debconf library
+. /usr/share/debconf/confmodule
+
+# Source dbconfig-common functions
+if [ -f /usr/share/dbconfig-common/dpkg/postinst.pgsql  ]; then
+  . /usr/share/dbconfig-common/dpkg/postinst.pgsql
+fi
+
+# summary of how this script can be called:
+#        * <prerm> `remove'
+#        * <old-prerm> `upgrade' <new-version>
+#        * <new-prerm> `failed-upgrade' <old-version>
+#        * <conflictor's-prerm> `remove' `in-favour' <package> <new-version>
+#        * <deconfigured's-prerm> `deconfigure' `in-favour'
+#          <package-being-installed> <version> `removing'
+#          <conflicting-package> <version>
+# for details, see http://www.debian.org/doc/debian-policy/ or
+# the debian-policy package
+
+
+case "$1" in
+    install)
+      USER=`who | grep ':0' | grep -o '^\w*' | head -n1`
+      if [ "$(id -u $USER)" != "0" ]; then
+	if [ -f /usr/share/logigsk/LogiGSK ]; then
+	 sudo -H -u $USER "/usr/share/logigsk/LogiGSK" stop
+	fi	
+      fi
+    ;;
+
+    upgrade|abort-upgrade)
+      USER=`who | grep ':0' | grep -o '^\w*' | head -n1`
+      if [ "$(id -u $USER)" != "0" ]; then
+	sudo -H -u $USER "/usr/share/logigsk/LogiGSK" stop
+      fi
+    ;;
+
+    *)
+      echo "postinst called with unknown argument \`$1'" >&2
+      exit 0
+    ;;
+esac
+
+exit 0
+endmsg
+cat > $TEMP_DIR/tmpscripts/postinst <<'endmsg'
+#!/bin/sh
+#
+# postinst script for LogiGSK
+#
+
+set -e
+
+# source debconf library
+. /usr/share/debconf/confmodule
+
+# Source dbconfig-common functions
+if [ -f /usr/share/dbconfig-common/dpkg/postinst.pgsql  ]; then
+  . /usr/share/dbconfig-common/dpkg/postinst.pgsql
+fi
+
+# summary of how this script can be called:
+#        * <postinst> `configure' <most-recently-configured-version>
+#        * <old-postinst> `abort-upgrade' <new version>
+#        * <conflictor's-postinst> `abort-remove' `in-favour' <package>
+#          <new-version>
+#        * <postinst> `abort-remove'
+#        * <deconfigured's-postinst> `abort-deconfigure' `in-favour'
+#          <failed-install-package> <version> `removing'
+#          <conflicting-package> <version>
+# for details, see http://www.debian.org/doc/debian-policy/ or
+# the debian-policy package
+
+case "$1" in
+
+  configure)
+    sudo ln -sf /usr/share/logigsk/LogiGSK.rules /etc/udev/rules.d/
+    sudo udevadm control --reload-rules
+    sudo ln -sf /usr/share/logigsk/99_LogiGSK /etc/pm/sleep.d/
+    USER=`who | grep ':0' | grep -o '^\w*' | head -n1`
+    if [ "$(id -u $USER)" != "0" ]; then
+      HOME=`eval echo ~$USER`
+      if [ -d "$HOME/.config/autostart/" ]; then
+	sudo -u $USER ln -sf /usr/share/logigsk/LogiGSK.sh "$HOME/.config/autostart/LogiGSK.sh"
+      else      
+	echo "failed to setup LogiGSK service startup file in autostart, please refere to website for more details."
+      fi    
+      sudo -H -u $USER "/usr/share/logigsk/LogiGSK" start
+      exit 0
+    else
+      echo "failed to setup LogiGSK service startup file in autostart, please refere to website for more details."
+      exit 1
+    fi
+  ;;
+
+  *)
+    echo "postinst called with unknown argument \`$1'" >&2
+    exit 1
+  ;;
+
+esac
+
+exit 0
+endmsg
+cat > $TEMP_DIR/tmpscripts/postrm <<'endmsg'
+#!/bin/sh
+#
+# postrm script for LogiGSK
+#
+
+set -e
+
+# source debconf library
+. /usr/share/debconf/confmodule
+
+# Source dbconfig-common functions
+if [ -f /usr/share/dbconfig-common/dpkg/postinst.pgsql  ]; then
+  . /usr/share/dbconfig-common/dpkg/postinst.pgsql
+fi
+
+# summary of how this script can be called:
+#        * <postrm> `remove'
+#        * <postrm> `purge'
+#        * <old-postrm> `upgrade' <new-version>
+#        * <new-postrm> `failed-upgrade' <old-version>
+#        * <new-postrm> `abort-install'
+#        * <new-postrm> `abort-install' <old-version>
+#        * <new-postrm> `abort-upgrade' <old-version>
+#        * <disappearer's-postrm> `disappear' <r>overwrit>r> <new-version>
+# for details, see http://www.debian.org/doc/debian-policy/ or
+# the debian-policy package
+
+
+case "$1" in
+  purge)
+    if [ -L /etc/udev/rules.d/LogiGSK.rules ]; then
+      sudo rm /etc/udev/rules.d/LogiGSK.rules
+      sudo udevadm control --reload-rules
+    fi
+    if [ -L /etc/pm/sleep.d/99_LogiGSK ]; then
+      sudo rm /etc/pm/sleep.d/99_LogiGSK
+    fi
+    USER=`who | grep ':0' | grep -o '^\w*' | head -n1`
+    if [ "$(id -u $USER)" != "0" ]; then
+      HOME=`eval echo ~$USER`
+      if [ -L "$HOME/.config/autostart/LogiGSK.sh" ]; then
+	sudo rm "$HOME/.config/autostart/LogiGSK.sh"
+      fi
+    fi
+  ;;
+
+  remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+    if [ -L /etc/udev/rules.d/LogiGSK.rules ]; then
+      sudo rm /etc/udev/rules.d/LogiGSK.rules
+      sudo udevadm control --reload-rules
+    fi
+    if [ -L /etc/pm/sleep.d/99_LogiGSK ]; then
+      sudo rm /etc/pm/sleep.d/99_LogiGSK
+    fi
+    USER=`who | grep ':0' | grep -o '^\w*' | head -n1`    
+    if [ "$(id -u $USER)" != "0" ]; then
+      HOME=`eval echo ~$USER`
+      if [ -L "$HOME/.config/autostart/LogiGSK.sh" ]; then
+	sudo rm "$HOME/.config/autostart/LogiGSK.sh"
+      fi
+    fi
+  ;;
+
+  *)
+    echo "postrm called with unknown argument \`$1'" >&2
+    exit 1
+  ;;
+
+esac
+
+
+exit 0
+endmsg
+cat > $TEMP_DIR/tmpscripts/prerm <<'endmsg'
+#!/bin/sh
+#
+# prerm script for LogiGSK
+#
+
+set -e
+
+# source debconf library
+. /usr/share/debconf/confmodule
+
+# Source dbconfig-common functions
+if [ -f /usr/share/dbconfig-common/dpkg/postinst.pgsql  ]; then
+  . /usr/share/dbconfig-common/dpkg/postinst.pgsql
+fi
+
+# summary of how this script can be called:
+#        * <prerm> `remove'
+#        * <old-prerm> `upgrade' <new-version>
+#        * <new-prerm> `failed-upgrade' <old-version>
+#        * <conflictor's-prerm> `remove' `in-favour' <package> <new-version>
+#        * <deconfigured's-prerm> `deconfigure' `in-favour'
+#          <package-being-installed> <version> `removing'
+#          <conflicting-package> <version>
+# for details, see http://www.debian.org/doc/debian-policy/ or
+# the debian-policy package
+
+case "$1" in
+  remove)
+    USER=`who | grep ':0' | grep -o '^\w*' | head -n1`
+    if [ "$(id -u $USER)" != "0" ]; then
+      sudo -H -u $USER "/usr/share/logigsk/LogiGSK" stop
+    fi
+  ;;
+
+  upgrade|deconfigure|failed-upgrade)
+  ;;
+
+  *)
+    echo "prerm called with unknown argument \`$1'" >&2
+    exit 1
+  ;;
+esac
+
+
+exit 0
+endmsg
+cat > $TEMP_DIR/tmpscripts/daemon/LogiGSK <<'endmsg'
+#!/bin/sh
+
+if [ "$(id -u)" = "0" ]; then
+  echo "Please don't run as root"
+  exit 1
+fi
+
+NAME="LogiGSK"
+DESC="LogiGSK service"
+
+# Setup variables
+
+# The path to Jsvc
+EXEC=/usr/bin/jsvc
+
+# The path to the folder containing the java runtime
+JAVA_HOME=/usr/lib/jvm/default-java
+
+# The path to the folder containing the dameon and other needed libraries
+CLASS_PATH_L="/usr/share/logigsk/lib/*.jar"
+
+# The path to the folder containing the executable jar
+CLASS_PATH_R="/usr/share/logigsk/LogiGSK.jar"
+
+#Desktop
+XDG_DESKTOP_TYPE=KDE
+
+# The fully qualified name of the class to execute
+CLASS=Logi.GSeries.Service.LogiGSKService
+
+#The user to run the daemon as
+#USER=hammi
+
+# The file that will contain our process identification number (pid) for other scripts/programs that need to access it.
+PID=$HOME/.local/share/LogiGSK/LogiGSKService.pid
+
+# System.out writes to this file
+LOG_OUT=$HOME/.local/share/LogiGSK/LogiGSKService.out
+
+# System.err writes to this file...
+LOG_ERR=$HOME/.local/share/LogiGSK/LogiGSKService.err
+
+jsvc_exec()
+{
+    export DISPLAY=:0
+    #export XDG_CURRENT_DESKTOP=$XDG_DESKTOP_TYPE
+    $EXEC -home "$JAVA_HOME" -cp "$CLASS_PATH_L":"$CLASS_PATH_R" -procname $NAME -outfile $LOG_OUT -errfile $LOG_ERR -pidfile $PID $1 $CLASS
+}
+
+case "$1" in
+    start)
+        echo "Starting the $DESC..."        
+        
+        # Start the service
+        jsvc_exec
+        
+        echo "The $DESC has started."
+            ;;
+    stop)
+	if [ -f "$PID" ]; then
+	  echo "Stopping the $DESC..."
+	  
+	  # Stop the service
+	  jsvc_exec "-stop"       
+	  
+	  echo "The $DESC has stopped."
+	else
+	  echo "Daemon not running, no action taken"
+	fi
+            ;;
+    restart)
+        if [ -f "$PID" ]; then
+            
+            echo "Restarting the $DESC..."
+            
+            # Stop the service
+            jsvc_exec "-stop"
+            
+            # Start the service
+            jsvc_exec
+            
+            echo "The $DESC has restarted."
+        else
+            echo "Daemon not running, no action taken"
+        fi
+            ;;
+    *)
+            echo "Usage: /usr/share/logigsk/$NAME {start|stop|restart}" >&2
+	    exit 3
+            ;;
+esac
+endmsg
+
+cp $TEMP_DIR/tmpscripts/control $TEMP_DIR/debian/DEBIAN/
+cp $TEMP_DIR/tmpscripts/preinst $TEMP_DIR/debian/DEBIAN/
+chmod 755 $TEMP_DIR/debian/DEBIAN/preinst
+cp $TEMP_DIR/tmpscripts/postinst $TEMP_DIR/debian/DEBIAN/
+chmod 755 $TEMP_DIR/debian/DEBIAN/postinst
+cp $TEMP_DIR/tmpscripts/prerm $TEMP_DIR/debian/DEBIAN/
+chmod 755 $TEMP_DIR/debian/DEBIAN/prerm
+cp $TEMP_DIR/tmpscripts/postrm $TEMP_DIR/debian/DEBIAN/
+chmod 755 $TEMP_DIR/debian/DEBIAN/postrm
+ 
+cp $TEMP_DIR/tmpscripts/logigsk.desktop $TEMP_DIR/debian/usr/share/applications/
+chmod 0644 $TEMP_DIR/debian/usr/share/applications/logigsk.desktop
+cp $TEMP_DIR/tmpscripts/copyright $TEMP_DIR/debian/usr/share/doc/$PACKAGE_NAME/
+chmod 0644 $TEMP_DIR/debian/usr/share/doc/$PACKAGE_NAME/copyright
+
+cp $TEMP_DIR/tmpscripts/LogiGSK.rules $TEMP_DIR/debian/usr/share/$PACKAGE_NAME/
+chmod 0644 $TEMP_DIR/debian/usr/share/$PACKAGE_NAME/LogiGSK.rules
+cp $TEMP_DIR/tmpscripts/LogiGSK.sh $TEMP_DIR/debian/usr/share/$PACKAGE_NAME/
+chmod 755 $TEMP_DIR/debian/usr/share/$PACKAGE_NAME/LogiGSK.sh
+cp $TEMP_DIR/tmpscripts/99_LogiGSK $TEMP_DIR/debian/usr/share/$PACKAGE_NAME/
+chmod 755 $TEMP_DIR/debian/usr/share/$PACKAGE_NAME/99_LogiGSK
+cp $DIR/dist/LogiGSK.jar $TEMP_DIR/debian/usr/share/$PACKAGE_NAME/
+chmod 755 $TEMP_DIR/debian/usr/share/$PACKAGE_NAME/LogiGSK.jar
+cp $DIR/dist/lib/*.jar $TEMP_DIR/debian/usr/share/$PACKAGE_NAME/lib/
+chmod 0644 $TEMP_DIR/debian/usr/share/$PACKAGE_NAME/lib/*.jar
+cp $TEMP_DIR/tmpscripts/daemon/LogiGSK $TEMP_DIR/debian/usr/share/$PACKAGE_NAME/
+chmod 755 $TEMP_DIR/debian/usr/share/$PACKAGE_NAME/LogiGSK
+cp $TEMP_DIR/tmpscripts/$PACKAGE_NAME $TEMP_DIR/debian/usr/bin/
+chmod 755 $TEMP_DIR/debian/usr/bin/$PACKAGE_NAME
+cp $TEMP_DIR/tmpscripts/$PACKAGE_SERVICE_NAME $TEMP_DIR/debian/usr/bin/
+chmod 755 $TEMP_DIR/debian/usr/bin/$PACKAGE_SERVICE_NAME
+ 
+echo "$PACKAGE_NAME ($PACKAGE_VERSION) trusty; urgency=low" > changelog
+echo "  * Rebuild" >> changelog
+echo " -- Mohamad Saada <Mohamad@MohamadSaada.com>  `date -R`" >> changelog
+gzip -9c changelog > $TEMP_DIR/debian/usr/share/doc/$PACKAGE_NAME/changelog.gz
+ 
+cp $DIR/src/Logi/GSeries/Keyboard/Resources/Images/GSK_Icon.png $TEMP_DIR/debian/usr/share/$PACKAGE_NAME/LogiGSK.png
+chmod 0644 $TEMP_DIR/debian/usr/share/$PACKAGE_NAME/LogiGSK.png
+ 
+PACKAGE_SIZE=`du -bs $TEMP_DIR/debian | cut -f 1`
+PACKAGE_SIZE=$((PACKAGE_SIZE/1024))
+echo "Installed-Size: $PACKAGE_SIZE" >> $TEMP_DIR/debian/DEBIAN/control
+ 
+chown -R root $TEMP_DIR/debian/
+chgrp -R root $TEMP_DIR/debian/
+ 
+cd $TEMP_DIR/
+dpkg --build debian
+
+case "$1" in
+
+  deb)
+    mv debian.deb $DIR/$PACKAGE_NAME-$PACKAGE_VERSION.deb
+  ;;
+  
+  rpm)
+    alien -r -c -v debian.deb
+    mv *.rpm $DIR/$PACKAGE_NAME-$PACKAGE_VERSION.rpm
+  ;;
+  
+  *)
+    alien -r -c -v debian.deb
+    mv debian.deb $DIR/$PACKAGE_NAME-$PACKAGE_VERSION.deb
+    mv *.rpm $DIR/$PACKAGE_NAME-$PACKAGE_VERSION.rpm
+  ;;
+esac
+
+rm -r $TEMP_DIR/debian
+rm -r $TEMP_DIR/tmpscripts
