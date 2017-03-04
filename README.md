@@ -44,6 +44,10 @@ Both main program and daemon feature a hotplug feature where it detects if a sup
 The daemon part will be responsible in connecting to a future android app that will also control keyboard colours and effects. It will also retrieve useful information from the computer (CPU, memory, etc...).
 
 
+<b>Important Note</b> </br>
+The current supported layouts are US_QWERTY layout for all keyboards and US_QWERTY and UK_QWERTY Layout for all G910 Models, if your layout is not included, please open and issue and I would try to add it as soon as possible. Or if you like to contribute to the project and create your own layout it is really easy, just have a look on one of the layout classes for your keyboard type and you'll figure it out, I'm always available for help so don't hesitate to ask.
+
+
 
 <a href="https://github.com/MohamadSaada/LogiGSK/wiki/Installation"><h2><b>Installation</b></h2></a>
 
