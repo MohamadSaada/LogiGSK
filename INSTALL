@@ -203,7 +203,7 @@ DESC="LogiGSK service"
 EXEC=/usr/bin/jsvc
 
 # The path to the folder containing the java runtime
-JAVA_HOME=/usr/lib/jvm/default-java
+#JAVA_HOME=/usr/lib/jvm/default-java
 
 # The path to the folder containing the dameon and other needed libraries
 CLASS_PATH_L="/usr/share/logigsk/lib/*.jar"
