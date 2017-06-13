@@ -46,13 +46,16 @@ The daemon part will be responsible in connecting to a future android app that w
 
 <b>Important Note</b> </br>
 The current supported layouts are US_QWERTY layout for all keyboards and US_QWERTY and UK_QWERTY Layout for all G910 Models, if your layout is not included, please open and issue and I would try to add it as soon as possible.
-If you want to contribute, you are more than welcome. In order to add a layout, there are a few main things you have to do (That I can think of).
 
-Create a class for your specific model and layout, you can see an example of this in the source code such as the G910SpectrumUSQWERTY Class. It's easy to write this class, you just need to create an image of your keyboards layout in in a way that all the white letter and symbol markings on that image are made transparent using GIMP, Photoshop or any other program (and please try to stick to the resolution used for other layouts, have a look at the .png files in the source). After you have finished the PNG image, use it in the class file, and align the JPanels with their corresponding keys. Please make sure that your select the appropriate keys for your model and layout. Make sure you change the code in your class file to suit your layout. And make sure that the class file you create abides by the template set in other layout class files.
-Add the corresponding code to use your class in the LogiGSK class, have a look at that class and you will know what to do.
-Add a layout enumeration such as KeyG910USQWERTY and make suitable additions in the Keyboard class.
-Check other classes to make sure you add your layout where other layouts are used. An example of this is to change the StarEffect class by adding your corresponding layout.
+If you want to contribute, you are more than welcome. In order to add a layout, there are a few main things you have to do (That I can think of). 
+
+1. Create a class for your specific model and layout, you can see an example of this in the source code such as the `G910SpectrumUSQWERTY` Class. It's easy to write this class, you just need to create an image of your keyboards layout in in a way that all the white letter and symbol markings on that image are made transparent using GIMP, Photoshop or any other program (and please try to stick to the resolution used for other layouts, have a look at the .png files in the source). After you have finished the PNG image, use it in the class file, and align the JPanels with their corresponding keys. Please make sure that your select the appropriate keys for your model and layout. Make sure you change the code in your class file to suit your layout. And make sure that the class file you create abides by the template set in other layout class files.
+2. Add the corresponding code to use your class in  the `LogiGSK` class, have a look at that class and you will know what to do.
+3. Add a layout enumeration such as `KeyG910USQWERTY` and make suitable additions in the `Keyboard` class.
+4. Check other classes to make sure you add your layout where other layouts are used. An example of this is to change the `StarEffect` class by adding your corresponding layout.
+
 These are the main things that I can remember now. If I remember anything else I will add it later. If you need help please don't hesitate to ask.
+
 If you do find it too difficult to do yourself, just send me a link of your keyboards image and I will try my best and add it to the program as soon as I have sometime.
 
 
