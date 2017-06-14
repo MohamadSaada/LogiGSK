@@ -472,7 +472,7 @@ public class G910SpectrumUSQWERTY extends javax.swing.JInternalFrame {
                         case "076":
                             jPanelColour076.setBackground(jColorChooserFreeStyle.getColor());
                             jLayeredPane1.moveToBack(jPanelColour076);
-                            gKeyboard.setKey("backslash", hexColour, true);
+                            gKeyboard.setKey("intl_backslash", hexColour, true);
                             break;
                         case "077":
                             jPanelColour077.setBackground(jColorChooserFreeStyle.getColor());
