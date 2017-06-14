@@ -127,7 +127,7 @@ public class Keyboard {
         tab, caps_lock, space, backspace, enter,
         a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z,
         tilde, minus, equal,
-        open_bracket, close_bracket, backslash,
+        open_bracket, close_bracket, intl_backslash,
         semicolon, quote,
         comma, period, slash
     };
