@@ -1018,7 +1018,7 @@ public class G910SpectrumUKQWERTY extends javax.swing.JInternalFrame {
         //shutdown hooks to get executed before program shutdown
         //this isn't really necessary as service will do this again once program is shutdown,
         //this piece of code is left from period before service was implemented
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+        /*Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             public void run() {
                 //stop effects                
                 stopGKeyboardEffects(false);
@@ -1033,7 +1033,7 @@ public class G910SpectrumUKQWERTY extends javax.swing.JInternalFrame {
                     disableAlljLayeredPaneEffectsChildren();
                 }
             }
-        }));
+        }));*/
     }
 
     /**
