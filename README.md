@@ -82,6 +82,11 @@ Please note that the package creator script `logigsk-buildpackage` uses Apache A
 
 Please note that this script is very similar to the package creating script but it doesn't create a package, but rather installs the files directly to the directories bypassing the package installation through package manager step. it also differs from the package installation step in that it has an UNINSTALL script which can be executed by running `sudo logigsk UNINSATLL`.
 
+### Service not starting automatically?
+A link to the service starting script is created by default in the local `autostart` directory for the user installing the LogiGSK program. If the `autostart` directory is not found in `$HOME/.config/` it will not create the startup link thus the service will not start automatically on login. To solve this problem, search for the user's local `autostart` directory and create the startup link as following:</br>
+`ln -sf /usr/share/logigsk/LogiGSK.sh "$HOME/.config/autostart/LogiGSK.sh"`</br>
+please remember to replace `$HOME/.config/autostart/` with the corresponding location for the user's local `autostart` in your system.</br>
+
 <b>Free Style</b> </br></br>
 <img src="https://raw.githubusercontent.com/MohamadSaada/LogiGSK/master/SampleImages/LogitechGSeriesKeyboardSoftware_1.png"> </br>
 
