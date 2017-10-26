@@ -86,6 +86,13 @@ Please note that this script is very similar to the package creating script but 
 A link to the service starting script is created by default in the local `autostart` directory for the user installing the LogiGSK program. If the `autostart` directory is not found in `$HOME/.config/` it will not create the startup link thus the service will not start automatically on login. To solve this problem, search for the user's local `autostart` directory and create the startup link as following:</br>
 `ln -sf /usr/share/logigsk/LogiGSK.sh "$HOME/.config/autostart/LogiGSK.sh"`</br>
 please remember to replace `$HOME/.config/autostart/` with the corresponding location for the user's local `autostart` in your system.</br>
+### Service not running due to selected display?
+Please note that the default DISPLAY variable that is set here is `:0`, please check your display variable by typing the following in bash: `echo $DISPLAY`. And please note that the default desktop that is set to `KDE`. Please find out your current desktop by typing something like the following: `echo $XDG_CURRENT_DESKTOP`. Once you have found both variables please change their corresponding values in you LogiGSK file as follows:</br>
+`sudo vim /usr/share/logigsk/LogiGSK`</br>
+Once you have made the changes start the service by running:</br>
+`logigsk-service start`
+
+
 
 <b>Free Style</b> </br></br>
 <img src="https://raw.githubusercontent.com/MohamadSaada/LogiGSK/master/SampleImages/LogitechGSeriesKeyboardSoftware_1.png"> </br>
