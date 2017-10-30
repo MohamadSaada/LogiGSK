@@ -72,8 +72,8 @@ If you do find it too difficult to do yourself, just send me a link of your keyb
 Please note that the package creator script `logigsk-buildpackage` uses Apache Ant, java, alien and dpkg tools to compile the source code to create executable jars which in turn are used along with other scripts to create the final package, you can trace every step in `logigsk-buildpackage` for a better understanding
 
 ### Using provided package files (second best way)
-* [.deb package](https://drive.google.com/open?id=0B9Jw3nU_1quKcnlMTEZsbFl3Q0E)
-* [.rpm package](https://drive.google.com/open?id=0B9Jw3nU_1quKMWNzRm5LOXAwVzQ)
+* [.deb package](https://drive.google.com/open?id=0B9Jw3nU_1quKa3JJWlM1cEw1U3M)
+* [.rpm package](https://drive.google.com/open?id=0B9Jw3nU_1quKaVI3aWZWdHBoeTQ)
 
 ### Using provided INSTALL script (third best way)
 * Clone and extract repository
