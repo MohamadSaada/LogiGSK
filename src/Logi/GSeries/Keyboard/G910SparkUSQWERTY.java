@@ -472,7 +472,7 @@ public class G910SparkUSQWERTY extends javax.swing.JInternalFrame {
                         case "076":
                             jPanelColour076.setBackground(jColorChooserFreeStyle.getColor());
                             jLayeredPane1.moveToBack(jPanelColour076);
-                            gKeyboard.setKey("intl_backslash", hexColour, true);
+                            gKeyboard.setKey("backslash", hexColour, true);
                             break;
                         case "077":
                             jPanelColour077.setBackground(jColorChooserFreeStyle.getColor());
@@ -6761,11 +6761,11 @@ public class G910SparkUSQWERTY extends javax.swing.JInternalFrame {
         convertedColours[116] = colours[28];
         convertedColours[117] = colours[48];
         convertedColours[118] = colours[49];
-        convertedColours[119] = "000000";
+        convertedColours[119] = colours[75];
         convertedColours[120] = colours[68];
         convertedColours[121] = colours[69];
         convertedColours[122] = colours[70];
-        convertedColours[123] = colours[75];
+        convertedColours[123] = "000000";
         convertedColours[124] = colours[83];
         convertedColours[125] = colours[84];
         convertedColours[126] = colours[85];
@@ -6890,7 +6890,7 @@ public class G910SparkUSQWERTY extends javax.swing.JInternalFrame {
         convertedColours[68] = colours[120];
         convertedColours[69] = colours[121];
         convertedColours[70] = colours[122];
-        convertedColours[75] = colours[123];
+        convertedColours[75] = colours[119];
         convertedColours[83] = colours[124];
         convertedColours[84] = colours[125];
         convertedColours[85] = colours[126];

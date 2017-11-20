@@ -129,7 +129,7 @@ public class Keyboard {
         tilde, minus, equal,
         open_bracket, close_bracket,
         semicolon, quote,
-        intl_backslash, comma, period, slash
+        backslash, comma, period, slash
     };
     
     public enum KeyG810USQWERTY { // 115 keys
