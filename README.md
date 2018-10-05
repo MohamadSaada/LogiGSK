@@ -93,6 +93,11 @@ Once you have made the changes start the service by running:</br>
 `logigsk-service start`
 
 
+###JSVC not running due to directory structure change
+
+Thank to Julian Thatcher @andrakis Please refer to https://github.com/MohamadSaada/LogiGSK/issues/28#issuecomment-418680869
+
+
 
 <b>Free Style</b> </br></br>
 <img src="https://raw.githubusercontent.com/MohamadSaada/LogiGSK/master/SampleImages/LogitechGSeriesKeyboardSoftware_1.png"> </br>
