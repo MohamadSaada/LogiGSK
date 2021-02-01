@@ -288,20 +288,16 @@ case "$1" in
     sudo ln -sf /usr/share/logigsk/LogiGSK.rules /etc/udev/rules.d/
     sudo udevadm control --reload-rules
     sudo ln -sf /usr/share/logigsk/99_LogiGSK /etc/pm/sleep.d/
-    USER=`who | grep ':0' | grep -o '^\w*' | head -n1`
-    if [ "$(id -u $USER)" != "0" ]; then
-      HOME=`eval echo ~$USER`
-      if [ -d "$HOME/.config/autostart/" ]; then
-	sudo -u $USER ln -sf /usr/share/logigsk/LogiGSK.sh "$HOME/.config/autostart/LogiGSK.sh"
-      else      
-	echo "failed to setup LogiGSK service startup file in autostart, please refere to website for more details."
-      fi    
-      sudo -H -u $USER "/usr/share/logigsk/LogiGSK" start
-      exit 0
-    else
-      echo "failed to setup LogiGSK service startup file in autostart, please refere to website for more details."
-      exit 1
-    fi
+    echo
+    echo "To automatically start this service on login for all users, run (as root):"
+    echo '# ln -sf /usr/share/logigsk/LogiGSK.sh /etc/xdg/autostart/LogiGSK.sh'
+    echo
+    echo "To automatically start this service on login for a single user, run (as that user):"
+    echo '$ ln -sf /usr/share/logigsk/LogiGSK.sh $HOME/.config/autostart/LogiGSK.sh'
+    echo
+    echo "To manually start this service for use by a user, run (as that user):"
+    echo '$ /usr/share/logigsk/LogiGSK start'
+    echo
   ;;
 
   *)
